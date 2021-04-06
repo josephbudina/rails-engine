@@ -12,7 +12,7 @@ before_action :set_page, only: [:index]
   end
 
   def show
-    @merchant = Merchant.find(params[:id])
+    @merchant = Merchant.find_by!(id: params[:id])
     render json: MerchantSerializer.new(@merchant)
   end
 

@@ -1,12 +1,7 @@
 class ApplicationController < ActionController::API
+  rescue_from ActiveRecord::RecordInvalid, with: :render_unprocessable_entity_response
 
-  def not_found
-    raise ActionController::RoutingError.new('Not Found')
-  rescue
-    render_404
-  end
-
-  def render_404
-    render file: "#{Rails.root}/public/404", status: :not_found
+  def render_unprocessable_entity_response(exception)
+    render json: exception.record.errors, status: 404
   end
 end
