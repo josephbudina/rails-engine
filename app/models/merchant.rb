@@ -4,4 +4,8 @@ class Merchant < ApplicationRecord
   has_many :invoices, through: :invoice_items
   has_many :transactions, through: :invoices
   has_many :customers, through: :invoices
+
+  def self.find_one(name)
+    order(name: :asc).find_by("name ILIKE ?", "%#{name}%")
+  end
 end
