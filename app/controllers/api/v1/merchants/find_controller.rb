@@ -1,5 +1,5 @@
 class Api::V1::Merchants::FindController < ApplicationController
-  def index
+  def show
     merchant = Merchant.find_one(params[:name])
     if merchant.nil?
       render json: {data: {}}
