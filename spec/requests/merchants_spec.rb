@@ -86,4 +86,20 @@ RSpec.describe 'Merchants API', type: :request do
       expect(json[:data].last[:attributes][:name]).to eq(@item_2.name)
     end
   end
+
+  describe 'Find one merchant happy path' do
+    before { get "http://localhost:3000/api/v1/merchants/find?name=#{merchants.first.name}"}
+
+    it 'finds one merchant by name' do
+      expect(json[:data].size).to eq(3)
+      expect(json[:data][:attributes][:name]).to eq(merchants.first.name)
+    end
+  end
+
+  describe 'Find one merchant sad path' do
+    before { get "http://localhost:3000/api/v1/merchants/find?name=fdasfdasgads" }
+      it 'puts an empty hash if no merchant is found' do
+      expect(json[:data]).to eq({})
+    end
+  end
 end
