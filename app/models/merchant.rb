@@ -6,6 +6,6 @@ class Merchant < ApplicationRecord
   has_many :customers, through: :invoices
 
   def self.find_one(name)
-    find_by("name ILIKE ?", "%#{name.downcase}%")
+    order(name: :asc).find_by("name ILIKE ?", "%#{name}%")
   end
 end
