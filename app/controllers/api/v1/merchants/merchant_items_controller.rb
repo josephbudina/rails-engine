@@ -1,11 +1,6 @@
-class Api::V1::MerchantItemsController < ApplicationController
+class Api::V1::Merchants::MerchantItemsController < ApplicationController
   def index
-    @merchant = Merchant.find_by(id: params[:merchant_id])
-
-    if @merchant
-      render json: ItemSerializer.new(@merchant.items)
-    else
-      not_found
-    end
+    merchant = Merchant.find_by!(id: params[:id])
+    render json: ItemSerializer.new(merchant.items)
   end
 end
