@@ -9,7 +9,7 @@ class Api::V1::Items::FindAllController < ApplicationController
     if @item.present?
       render json: ItemSerializer.new(@item)
     else
-      render json: {data: {}, error: "error"}, status: 400
+      render json: {data: [], error: "error"}, status: 400
     end
   end
 
