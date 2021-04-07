@@ -8,4 +8,9 @@ class Api::V1::Revenue::MerchantsController < ApplicationController
       render json: {data: {}, error: "error"}, status: 400
     end
   end
+
+  def show
+    merchant = Merchant.find_by!(id: params[:id])
+    render json: MerchantRevenueSerializer.new(merchant)
+  end 
 end
