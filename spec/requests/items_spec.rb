@@ -74,12 +74,75 @@ RSpec.describe 'Items API', type: :request do
     end
   end
 
-  describe 'Get a items items' do
+  describe 'Get an items merchant' do
     before { get "http://localhost:3000/api/v1/items/#{items.first.id}/merchant" }
 
     it 'finds all items' do
       expect(json.size).to eq(1)
       expect(json[:data][:attributes][:name]).to eq(items.first.merchant.name)
+    end
+  end
+
+  describe 'Find all items happy path' do
+    before { @item_1 = create(:item, name: "same", unit_price: 300) }
+    before { @item_2 = create(:item, name: "Same", unit_price: 350) }
+    before { @item_3 = create(:item, name: "saMe", unit_price: 360) }
+    before { @item_4 = create(:item, name: "sorta same", unit_price: 200) }
+    before { get "http://localhost:3000/api/v1/items/find_all?name=#{items.first.name}"}
+    it 'finds all items that match a description' do
+      expect(json[:data][0][:attributes].size).to eq(4)
+      expect(json[:data][0][:attributes][:name]).to eq(items.first.name)
+    end
+  end
+
+  describe 'Find all items sad path' do
+    before { get "http://localhost:3000/api/v1/items/find_all?name=fdasfdasgads" }
+    it 'puts an empty hash if no merchant is found' do
+        expect(json[:data]).to eq([])
+    end
+  end
+
+  describe 'find all items by min price happy path' do
+    before { @item_1 = create(:item, name: "same", unit_price: 10000) }
+    before { @item_2 = create(:item, name: "Same", unit_price: 10500) }
+    before { @item_3 = create(:item, name: "saMe", unit_price: 10600) }
+    before { @item_4 = create(:item, name: "sorta same", unit_price: 900) }
+    before { get "http://localhost:3000/api/v1/items/find_all?min_price=10000" }
+    it 'finds items by min price and above' do
+      expect(json[:data].size).to eq(3)
+    end
+  end
+  
+  describe 'find all items by min price too high' do
+    before { @item_1 = create(:item, name: "same", unit_price: 10000) }
+    before { @item_2 = create(:item, name: "Same", unit_price: 10500) }
+    before { @item_3 = create(:item, name: "saMe", unit_price: 10600) }
+    before { @item_4 = create(:item, name: "sorta same", unit_price: 900) }
+    before { get "http://localhost:3000/api/v1/items/find_all?min_price=1000000000" }
+    it 'finds items by min price and above' do
+      expect(json[:data].size).to eq(0)
+    end
+  end
+
+  describe 'find all items by max price happy path' do
+    before { @item_1 = create(:item, name: "same", unit_price: 1) }
+    before { @item_2 = create(:item, name: "Same", unit_price: 2) }
+    before { @item_3 = create(:item, name: "saMe", unit_price: 3) }
+    before { @item_4 = create(:item, name: "sorta same", unit_price: 900) }
+    before { get "http://localhost:3000/api/v1/items/find_all?max_price=4" }
+    it 'finds items by min price and above' do
+      expect(json[:data].size).to eq(3)
+    end
+  end
+
+  describe 'find all items by max price too low' do
+    before { @item_1 = create(:item, name: "same", unit_price: 1) }
+    before { @item_2 = create(:item, name: "Same", unit_price: 2) }
+    before { @item_3 = create(:item, name: "saMe", unit_price: 3) }
+    before { @item_4 = create(:item, name: "sorta same", unit_price: 900) }
+    before { get "http://localhost:3000/api/v1/items/find_all?max_price=0" }
+    it 'finds items by min price and above' do
+      expect(json[:data].size).to eq(0)
     end
   end
 end
