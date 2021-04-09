@@ -21,7 +21,7 @@ class Merchant < ApplicationRecord
   def revenue
     transactions
     .where("transactions.result = ?", :success)
-    .pluck("sum(invoice_items.unit_price * invoice_items.quantity) as total_revenue")
+    .pluck("sum(invoice_items.unit_price * invoice_items.quantity)")
     .first
     .round(2)
   end
